@@ -22,7 +22,43 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
+
+    const classes = client.db("campusease").collection("classes");
+    const studentCollection = client.db("campusease").collection("student");
+    const reviewCollection = client.db("campusease").collection("review");
+
+    app.get("/classes", async (req, res) => {
+      const result = await classes.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/student", async (req, res) => {
+      const email = req.query.email;
+      const filter = { email: email };
+      console.log(email);
+      const cursor = studentCollection.find(filter);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/review", async (req, res) => {
+      const cursor = reviewCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post("/student", async (req, res) => {
+      const student = req.body;
+      const result = await studentCollection.insertOne(student);
+      res.send(result);
+    });
+
+    app.post("/review", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -30,7 +66,7 @@ async function run() {
     );
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
