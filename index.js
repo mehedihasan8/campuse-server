@@ -24,7 +24,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    const classes = client.db("campusease").collection("classes");
+    const classes = client.db("campusease").collection("colleges");
     const studentCollection = client.db("campusease").collection("student");
     const reviewCollection = client.db("campusease").collection("review");
 
@@ -36,7 +36,7 @@ async function run() {
     app.get("/student", async (req, res) => {
       const email = req.query.email;
       const filter = { email: email };
-      console.log(email);
+      // console.log(email);
       const cursor = studentCollection.find(filter);
       const result = await cursor.toArray();
       res.send(result);
